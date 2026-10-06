@@ -1,0 +1,3 @@
+# Local development only. Keep the maubot version equal to the pinned image tag.
+# "testing" brings pytest, pytest-asyncio and maubot's pytest fixtures (maubot.testing).
+maubot[testing]==0.6.0

@@ -1,0 +1,52 @@
+# Dev config for the second maubot ("userbots"), copied into its volume by setup.sh --bots.
+# Mirrors what production needs (admin-bot-setup.md, Phase 8): own DB, no registration_secrets,
+# only the admin bot as API user, client_auth / dev_open / instance_database off.
+database: sqlite:/data/maubot.db
+crypto_db_pickle_key: dev-userbots
+plugin_directories:
+  upload: /data/plugins
+  load: [/data/plugins]
+  trash: /data/trash
+plugin_databases:
+  sqlite: /data/plugins
+  postgres: null
+server:
+  hostname: 0.0.0.0
+  port: 29316
+  public_url: http://127.0.0.1:29317
+  ui_base_path: /_matrix/maubot
+  plugin_base_path: /_matrix/maubot/plugin/
+  override_resource_path: false
+  unshared_secret: generate
+homeservers:
+  localhost:
+    url: http://synapse:8008
+admins:
+  root: ""
+  adminbot: devpass1234567
+api_features:
+  login: true
+  plugin: true
+  plugin_upload: true
+  instance: true
+  instance_database: false
+  client: true
+  client_proxy: false
+  client_auth: false
+  dev_open: false
+  log: false
+logging:
+  version: 1
+  formatters:
+    normal:
+      format: "[%(asctime)s] [%(levelname)s@%(name)s] %(message)s"
+  handlers:
+    console:
+      class: logging.StreamHandler
+      formatter: normal
+  loggers:
+    maubot: {level: INFO}
+    mau: {level: INFO}
+  root:
+    level: INFO
+    handlers: [console]

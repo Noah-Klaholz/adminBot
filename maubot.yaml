@@ -1,0 +1,13 @@
+maubot: 0.6.0
+id: ch.unibas.dmi.marvin.adminbot
+version: 0.1.0
+license: MIT
+modules:
+  - adminbot
+main_class: AdminBot
+config: true
+extra_files:
+  - base-config.yaml
+database: true
+database_type: asyncpg
+webapp: true

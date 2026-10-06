@@ -1,0 +1,43 @@
+# Local dev stack for the MacBook: Synapse (server name "localhost", SQLite) + Postgres for
+# the plugin. The bot itself runs outside Docker in maubot standalone mode, straight from the
+# source tree (see ../README.md). Nothing here is used on the test node or in production.
+# Named volumes only: Docker Desktop often may not bind-mount from ~/Documents.
+name: adminbot-dev
+
+services:
+  synapse:
+    image: ghcr.io/element-hq/synapse:v1.157.0
+    environment:
+      - SYNAPSE_SERVER_NAME=localhost
+      - SYNAPSE_REPORT_STATS=no
+    volumes:
+      - synapse_data:/data
+    ports:
+      - "127.0.0.1:8008:8008"
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_USER=dev
+      - POSTGRES_PASSWORD=dev
+      - POSTGRES_DB=adminbot
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:5433:5432"
+
+  # Optional second maubot for professor bots (`docker compose --profile bots up -d`).
+  # Its config is written by setup.sh --bots. The port is published only for the dev bot,
+  # which runs outside Docker; in production this service has no ports at all.
+  userbots:
+    image: dock.mau.dev/maubot/maubot:v0.6.0
+    profiles: [bots]
+    volumes:
+      - userbots_data:/data
+    ports:
+      - "127.0.0.1:29317:29316"
+
+volumes:
+  synapse_data:
+  postgres_data:
+  userbots_data:

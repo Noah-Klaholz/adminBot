@@ -1,0 +1,84 @@
+# Admin bot instance config. These are the defaults; edit them per environment
+# in the maubot UI (instance -> config). Nothing here is server-specific.
+
+# Users with full rights in the bot. Separate from the Synapse server-admin flag
+# and from the maubot UI admins.
+admins: []
+
+# Professors pre-seeded on start (merged with the allowlist in the DB).
+professors: []
+
+# Matrix server name. Empty: taken from the bot's own user ID.
+server_name: ""
+
+# Private room for audit entries and self-check reports (room ID; the bot must be joined).
+audit_room: ""
+
+# Space that archived courses are moved into (room ID, empty = don't move).
+archive_space: ""
+
+# Language of user-facing texts (adminbot/strings/<language>.py).
+language: en
+
+startup:
+  # Run the startup self-check (§2). Only switched off in tests.
+  self_check: true
+
+identity:
+  # Email domains that may get accounts. The same localpart on any of them is one account.
+  allowed_domains:
+    - unibas.ch
+    - stud.unibas.ch
+  # Bind the email address(es) to the account as threepids.
+  bind_threepids: true
+
+signup:
+  # Public base URL of this instance's webapp, without a trailing slash.
+  # Production: https://matrix.dmi.unibas.ch/_matrix/maubot/plugin/adminbot
+  # Test node (SSH tunnel): https://localhost:8443/_matrix/maubot/plugin/adminbot
+  public_base_url: ""
+  # Where users log in afterwards (shown on the success page).
+  login_url: ""
+  token_ttl_days: 14
+  reset_ttl_hours: 24
+  min_password_length: 12
+  # Proxies whose X-Forwarded-For header is trusted (host nginx reaches maubot via the Docker gateway).
+  trusted_proxies:
+    - 127.0.0.1/32
+    - 172.16.0.0/12
+  rate_limit:
+    per_ip_per_hour: 20
+    global_per_hour: 300
+
+invites:
+  # invite | force_join
+  mode_existing: invite
+  mode_new: force_join
+
+power_levels:
+  owner: 100
+  ta: 50
+
+confirm:
+  ttl_minutes: 10
+
+jobs:
+  # Pause between job items, to stay below Synapse rate limits even without the override.
+  delay_seconds: 0.5
+
+uploads:
+  # How long the bot waits for a file after a command that needs one.
+  wait_minutes: 10
+  max_size_mb: 10
+
+user_bots:
+  enabled: false
+  # Management API of the SECOND maubot ("userbots"). Never this maubot.
+  maubot_url: http://userbots:29316
+  username: adminbot
+  password: ""
+  homeserver_url: http://synapse:8008
+  require_approval: true
+  max_per_professor: 3
+  max_mbp_size_mb: 10
+  ratelimit_exempt: false

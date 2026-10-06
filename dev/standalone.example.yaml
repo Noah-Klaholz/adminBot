@@ -1,0 +1,101 @@
+# maubot standalone config for local development. Copy to dev/standalone.yaml (gitignored)
+# and fill in access_token. Run from server/admin-bot/:
+#   python -m maubot.standalone -m maubot.yaml -c dev/standalone.yaml -b dev/standalone.example.yaml
+
+user:
+  credentials:
+    id: "@adminbot:localhost"
+    homeserver: http://localhost:8008
+    access_token: CHANGE-ME
+    # No E2EE locally (python-olm is painful on macOS). Element then creates unencrypted DMs
+    # with the bot. E2EE paths (encrypted uploads) are tested on the test node.
+    device_id: null
+  sync: true
+  appservice: false
+  hs_token: null
+  autojoin: true
+  displayname: Admin Bot (dev)
+  avatar_url: disable
+  ignore_initial_sync: true
+  ignore_first_sync: true
+
+# Webapp: same path as in production, so links look the same.
+server:
+  hostname: 127.0.0.1
+  port: 8090
+  base_path: /_matrix/maubot/plugin/adminbot
+  public_url: http://127.0.0.1:8090
+
+database: postgresql://dev:dev@localhost:5433/adminbot
+crypto_db_pickle_key: dev
+database_opts:
+  min_size: 1
+  max_size: 5
+
+# Full plugin config (mirror of ../base-config.yaml with dev values). Keep the structure in sync.
+plugin_config:
+  admins: ["@admin:localhost"]
+  professors: ["@prof:localhost"]
+  server_name: localhost
+  audit_room: ""
+  archive_space: ""
+  language: en
+  startup:
+    self_check: true
+  identity:
+    allowed_domains: [unibas.ch, stud.unibas.ch]
+    bind_threepids: true
+  signup:
+    public_base_url: http://127.0.0.1:8090/_matrix/maubot/plugin/adminbot
+    login_url: http://localhost:8008
+    token_ttl_days: 14
+    reset_ttl_hours: 24
+    min_password_length: 12
+    trusted_proxies: [127.0.0.1/32]
+    rate_limit:
+      per_ip_per_hour: 1000
+      global_per_hour: 1000
+  invites:
+    mode_existing: invite
+    mode_new: force_join
+  power_levels:
+    owner: 100
+    ta: 50
+  confirm:
+    ttl_minutes: 10
+  jobs:
+    delay_seconds: 0.1
+  uploads:
+    wait_minutes: 10
+    max_size_mb: 10
+  user_bots:
+    enabled: false
+    maubot_url: http://localhost:29316
+    username: adminbot
+    password: ""
+    homeserver_url: http://localhost:8008
+    require_approval: true
+    max_per_professor: 3
+    max_mbp_size_mb: 10
+    ratelimit_exempt: false
+
+logging:
+  version: 1
+  formatters:
+    colored:
+      (): maubot.lib.color_log.ColorFormatter
+      format: "[%(asctime)s] [%(levelname)s@%(name)s] %(message)s"
+  handlers:
+    console:
+      class: logging.StreamHandler
+      formatter: colored
+  loggers:
+    maubot:
+      level: DEBUG
+    mau:
+      level: DEBUG
+    aiohttp:
+      level: INFO
+  root:
+    level: DEBUG
+    handlers: [console]

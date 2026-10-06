@@ -1,0 +1,10 @@
+# Only used for local development (pytest). Not part of the .mbp; maubot reads maubot.yaml.
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+asyncio_mode = "auto"
+
+[dependency-groups]
+dev = [
+    "maubot[testing]==0.6.0",
+]

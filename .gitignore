@@ -1,0 +1,8 @@
+# Local dev stack runtime state (see README.md)
+dev/synapse/
+dev/standalone.yaml
+
+# Python
+__pycache__/
+.venv/
+.pytest_cache/
